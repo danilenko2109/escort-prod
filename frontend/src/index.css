@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-[#050505] text-[#F8F8F8] font-[Manrope];
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-[Cormorant_Garamond];
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .grain {
+    position: relative;
+  }
+  
+  .grain::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.6;
+  }
+  
+  .gold-shimmer {
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+    animation: shimmer 2s infinite;
+  }
+  
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+  
+
+  .hero-lips-bg::before {
+    content: '';
+    position: absolute;
+    inset: -28% -12%;
+    background-image:
+      url('data:image/svg+xml,%3Csvg width=%22180%22 height=%2290%22 viewBox=%220 0 180 90%22 fill=%22none%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cpath d=%22M10 45C23 40 39 30 56 28C68 27 74 31 79 31C84 31 90 27 102 28C119 30 135 40 148 45%22 stroke=%22%23D4AF37%22 stroke-opacity=%220.45%22 stroke-width=%222.4%22 stroke-linecap=%22round%22/%3E%3Cpath d=%22M12 45C25 50 41 60 58 63C69 65 75 59 79 59C83 59 89 65 100 63C117 60 133 50 146 45%22 stroke=%22%23D4AF37%22 stroke-opacity=%220.45%22 stroke-width=%222.4%22 stroke-linecap=%22round%22/%3E%3Cpath d=%22M26 45C39 42 55 40 69 42C74 43 77 46 79 46C81 46 84 43 89 42C103 40 119 42 132 45%22 stroke=%22%23C89A2F%22 stroke-opacity=%220.35%22 stroke-width=%221.6%22 stroke-linecap=%22round%22/%3E%3C/svg%3E');
+    background-repeat: repeat;
+    background-position: center;
+    background-size: 260px 130px;
+    opacity: 0.22;
+    filter: blur(0.5px);
+    pointer-events: none;
+  }
+
+  .lips-divider {
+    position: relative;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
+    border-radius: 50%;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0A0A0A;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #27272A;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #D4AF37;
+}
