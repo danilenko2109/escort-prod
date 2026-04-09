@@ -1,4 +1,4 @@
-const { sendTelegramMessage } = require('../utils/telegram');
+const { sendTelegramMessage, escapeTelegramHtml } = require('../utils/telegram');
 const db = require("../src/database/db");
 
 const ALLOWED_DURATIONS = ["1h", "2h", "3h"];
@@ -43,14 +43,14 @@ const submitBookingRequest = async (req, res) => {
   const telegramText = [
     '<b>Новая заявка на анкету</b>',
     '',
-    `<b>Код анкеты:</b> ${String(profileCode).trim()}`,
-    `<b>Длительность:</b> ${String(duration).trim()}`,
-    `<b>Дата:</b> ${String(bookingDate || 'не указана').trim()}`,
-    `<b>Время:</b> ${String(bookingTime || 'не указано').trim()}`,
-    `<b>Имя клиента:</b> ${String(clientName || 'не указано').trim()}`,
-    `<b>Телефон:</b> ${String(clientPhone || 'не указан').trim()}`,
-    `<b>Экстра:</b> ${(extras || []).join(', ') || 'нет'}`,
-    `<b>Комментарий:</b> ${String(comment || 'нет').trim()}`,
+    `<b>Код анкеты:</b> ${escapeTelegramHtml(String(profileCode).trim())}`,
+    `<b>Длительность:</b> ${escapeTelegramHtml(String(duration).trim())}`,
+    `<b>Дата:</b> ${escapeTelegramHtml(String(bookingDate || 'не указана').trim())}`,
+    `<b>Время:</b> ${escapeTelegramHtml(String(bookingTime || 'не указано').trim())}`,
+    `<b>Имя клиента:</b> ${escapeTelegramHtml(String(clientName || 'не указано').trim())}`,
+    `<b>Телефон:</b> ${escapeTelegramHtml(String(clientPhone || 'не указан').trim())}`,
+    `<b>Экстра:</b> ${escapeTelegramHtml((extras || []).join(', ') || 'нет')}`,
+    `<b>Комментарий:</b> ${escapeTelegramHtml(String(comment || 'нет').trim())}`,
     `<b>Создано:</b> ${new Date().toLocaleString('ru-RU')}`,
   ].join('\n');
 

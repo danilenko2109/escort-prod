@@ -1,6 +1,6 @@
 const db = require("../src/database/db");
 
-const { sendTelegramMessage } = require('../utils/telegram');
+const { sendTelegramMessage, escapeTelegramHtml } = require('../utils/telegram');
 
 const submitContact = async (req, res) => {
   const { name, email, phone, message } = req.body || {};
@@ -30,10 +30,10 @@ const submitContact = async (req, res) => {
   const telegramText = [
     "<b>Новая заявка из формы связи</b>",
     "",
-    `<b>Имя:</b> ${String(name).trim()}`,
-    `<b>Телефон:</b> ${String(phone).trim()}`,
-    `<b>Email:</b> ${String(email || "не указан").trim()}`,
-    `<b>Сообщение:</b> ${String(message).trim()}`,
+    `<b>Имя:</b> ${escapeTelegramHtml(String(name).trim())}`,
+    `<b>Телефон:</b> ${escapeTelegramHtml(String(phone).trim())}`,
+    `<b>Email:</b> ${escapeTelegramHtml(String(email || "не указан").trim())}`,
+    `<b>Сообщение:</b> ${escapeTelegramHtml(String(message).trim())}`,
     `<b>Дата/время:</b> ${new Date().toLocaleString("ru-RU")}`,
   ].join("\n");
 

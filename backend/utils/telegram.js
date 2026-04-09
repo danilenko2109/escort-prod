@@ -1,3 +1,10 @@
+const escapeTelegramHtml = (value) => {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+};
+
 const sendTelegramMessage = async (text) => {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
@@ -11,9 +18,9 @@ const sendTelegramMessage = async (text) => {
     throw new Error("TELEGRAM_BOT_TOKEN имеет некорректный формат");
   }
 
-  const chatIdLooksValid = /^-?\d+$/.test(String(chatId));
+  const chatIdLooksValid = /^-?\d+$/.test(String(chatId)) || /^@[\w\d_]{5,}$/.test(String(chatId));
   if (!chatIdLooksValid) {
-    throw new Error("TELEGRAM_CHAT_ID должен быть числом");
+    throw new Error("TELEGRAM_CHAT_ID должен быть числом или @channel_username");
   }
 
   const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
@@ -35,4 +42,4 @@ const sendTelegramMessage = async (text) => {
   return true;
 };
 
-module.exports = { sendTelegramMessage };
+module.exports = { sendTelegramMessage, escapeTelegramHtml };
