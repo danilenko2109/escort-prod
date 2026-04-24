@@ -38,7 +38,7 @@ const submitBookingRequest = async (req, res) => {
     return res.status(400).json({ detail: "Комментарий слишком длинный" });
   }
 
-  const bookingPhone = db.prepare("SELECT value FROM settings WHERE key = ?").get("booking_phone")?.value || "";
+  const bookingPhone = (await db.prepare("SELECT value FROM settings WHERE key = ?").get("booking_phone"))?.value || "";
 
   const telegramText = [
     '<b>Новая заявка на анкету</b>',

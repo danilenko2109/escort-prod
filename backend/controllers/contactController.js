@@ -21,9 +21,9 @@ const submitContact = async (req, res) => {
   }
 
   const now = new Date().toISOString();
-  const result = db
+  const result = await db
     .prepare(
-      "INSERT INTO contact_messages (name, email, phone, message, created_at) VALUES (?, ?, ?, ?, ?)"
+      "INSERT INTO contact_messages (name, email, phone, message, created_at) VALUES (?, ?, ?, ?, ?) RETURNING id"
     )
     .run(name, email || "", phone, message, now);
 

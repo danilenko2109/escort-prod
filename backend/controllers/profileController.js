@@ -52,10 +52,9 @@ const buildCode = (inputCode, name) => {
   return slugify(String(name || "profile"), { lower: true, strict: true });
 };
 
-const listProfiles = (req, res) => {
+const listProfiles = async (req, res) => {
   const { featured_only, active_only } = req.query;
   const conditions = [];
-  const params = [];
 
   if (featured_only === "true") {
     conditions.push("is_featured = 1");
@@ -65,34 +64,34 @@ const listProfiles = (req, res) => {
   }
 
   const whereClause = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
-  const rows = db
+  const rows = await db
     .prepare(`SELECT * FROM profiles ${whereClause} ORDER BY updated_at DESC`)
-    .all(...params);
+    .all();
 
   res.json(rows.map(toProfileResponse));
 };
 
-const getProfileById = (req, res) => {
-  const row = db.prepare("SELECT * FROM profiles WHERE id = ?").get(Number(req.params.id));
+const getProfileById = async (req, res) => {
+  const row = await db.prepare("SELECT * FROM profiles WHERE id = ?").get(Number(req.params.id));
   if (!row) {
     return res.status(404).json({ detail: "Profile not found" });
   }
   return res.json(toProfileResponse(row));
 };
 
-const searchProfileByCode = (req, res) => {
+const searchProfileByCode = async (req, res) => {
   const code = slugify(String(req.query.code || ""), { lower: true, strict: true });
   if (!code) {
     return res.status(400).json({ detail: "code query is required" });
   }
-  const row = db.prepare("SELECT * FROM profiles WHERE code = ?").get(code);
+  const row = await db.prepare("SELECT * FROM profiles WHERE code = ?").get(code);
   if (!row) {
     return res.status(404).json({ detail: "Profile not found" });
   }
   return res.json(toProfileResponse(row));
 };
 
-const createProfile = (req, res) => {
+const createProfile = async (req, res) => {
   const body = req.body || {};
   if (!body.name) {
     return res.status(400).json({ detail: "name is required" });
@@ -110,13 +109,13 @@ const createProfile = (req, res) => {
   const slug = code;
 
   try {
-    const result = db
+    const result = await db
       .prepare(
         `INSERT INTO profiles (
           code, slug, name, age, city, country, description_short, description_full,
           images, height, weight, languages, tags, is_active, is_featured,
           rate_1h, rate_2h, rate_3h, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id`
       )
       .run(
         code,
@@ -141,7 +140,7 @@ const createProfile = (req, res) => {
         now
       );
 
-    const created = db.prepare("SELECT * FROM profiles WHERE id = ?").get(result.lastInsertRowid);
+    const created = await db.prepare("SELECT * FROM profiles WHERE id = ?").get(result.lastInsertRowid);
     return res.status(201).json(toProfileResponse(created));
   } catch (error) {
     if (String(error.message).includes("UNIQUE")) {
@@ -151,9 +150,9 @@ const createProfile = (req, res) => {
   }
 };
 
-const updateProfile = (req, res) => {
+const updateProfile = async (req, res) => {
   const id = Number(req.params.id);
-  const existing = db.prepare("SELECT * FROM profiles WHERE id = ?").get(id);
+  const existing = await db.prepare("SELECT * FROM profiles WHERE id = ?").get(id);
   if (!existing) {
     return res.status(404).json({ detail: "Profile not found" });
   }
@@ -188,7 +187,7 @@ const updateProfile = (req, res) => {
   };
 
   try {
-    db.prepare(
+    await db.prepare(
       `UPDATE profiles SET
         code = ?, slug = ?, name = ?, age = ?, city = ?, country = ?,
         description_short = ?, description_full = ?, images = ?, height = ?, weight = ?,
@@ -223,12 +222,12 @@ const updateProfile = (req, res) => {
     return res.status(500).json({ detail: "Failed to update profile" });
   }
 
-  const row = db.prepare("SELECT * FROM profiles WHERE id = ?").get(id);
+  const row = await db.prepare("SELECT * FROM profiles WHERE id = ?").get(id);
   return res.json(toProfileResponse(row));
 };
 
-const deleteProfile = (req, res) => {
-  const result = db.prepare("DELETE FROM profiles WHERE id = ?").run(Number(req.params.id));
+const deleteProfile = async (req, res) => {
+  const result = await db.prepare("DELETE FROM profiles WHERE id = ?").run(Number(req.params.id));
   if (!result.changes) {
     return res.status(404).json({ detail: "Profile not found" });
   }

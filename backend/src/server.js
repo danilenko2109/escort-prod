@@ -31,9 +31,18 @@ const loadEnvFromFile = () => {
 loadEnvFromFile();
 
 const app = require("./app");
+const db = require("./database/db");
 
 const PORT = process.env.PORT || 8001;
 
-app.listen(PORT, () => {
-  console.log(`Backend running on http://localhost:${PORT}`);
+const start = async () => {
+  await db.init();
+  app.listen(PORT, () => {
+    console.log(`Backend running on http://localhost:${PORT}`);
+  });
+};
+
+start().catch((error) => {
+  console.error("Failed to start backend:", error);
+  process.exit(1);
 });

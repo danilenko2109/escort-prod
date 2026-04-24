@@ -1,8 +1,6 @@
 const path = require("path");
 const express = require("express");
 const cors = require("cors");
-require("./database/db");
-
 const profileRoutes = require("../routes/profileRoutes");
 const adminRoutes = require("../routes/adminRoutes");
 const contactRoutes = require("../routes/contactRoutes");
