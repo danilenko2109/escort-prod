@@ -2,9 +2,9 @@ const db = require("../src/database/db");
 
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "simple-admin-token";
 
-const adminLogin = (req, res) => {
+const adminLogin = async (req, res) => {
   const { username, password } = req.body || {};
-  const admin = db
+  const admin = await db
     .prepare("SELECT username FROM admins WHERE username = ? AND password = ?")
     .get(username, password);
 
@@ -19,11 +19,11 @@ const getAdminMe = (_req, res) => {
   res.json({ username: "admin" });
 };
 
-const getAdminStats = (_req, res) => {
-  const totalProfiles = db.prepare("SELECT COUNT(*) AS c FROM profiles").get().c;
-  const activeProfiles = db.prepare("SELECT COUNT(*) AS c FROM profiles WHERE is_active = 1").get().c;
-  const featuredProfiles = db.prepare("SELECT COUNT(*) AS c FROM profiles WHERE is_featured = 1").get().c;
-  const totalMessages = db.prepare("SELECT COUNT(*) AS c FROM contact_messages").get().c;
+const getAdminStats = async (_req, res) => {
+  const totalProfiles = (await db.prepare("SELECT COUNT(*) AS c FROM profiles").get()).c;
+  const activeProfiles = (await db.prepare("SELECT COUNT(*) AS c FROM profiles WHERE is_active = 1").get()).c;
+  const featuredProfiles = (await db.prepare("SELECT COUNT(*) AS c FROM profiles WHERE is_featured = 1").get()).c;
+  const totalMessages = (await db.prepare("SELECT COUNT(*) AS c FROM contact_messages").get()).c;
 
   res.json({
     total_profiles: totalProfiles,
