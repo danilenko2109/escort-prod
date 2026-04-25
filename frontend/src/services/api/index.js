@@ -6,10 +6,6 @@ const getApiBaseUrl = () => {
   const configured = normalizeBaseUrl(process.env.REACT_APP_BACKEND_URL);
   if (configured) return configured;
 
-  if (typeof window !== "undefined") {
-    return normalizeBaseUrl(window.location.origin);
-  }
-
   return "https://escort-prod.onrender.com";
 };
 
