@@ -1,13 +1,19 @@
 import axios from "axios";
 
 const normalizeBaseUrl = (value) => String(value || "").trim().replace(/\/$/, "");
+const isLocalhostUrl = (value) => /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(normalizeBaseUrl(value));
 
 const getApiBaseUrl = () => {
   const configured = normalizeBaseUrl(process.env.REACT_APP_BACKEND_URL);
-  if (configured) return configured;
+  const isBrowser = typeof window !== "undefined";
+  const isFrontendOnLocalhost = isBrowser && /^(localhost|127\.0\.0\.1)$/i.test(window.location.hostname);
 
-  if (typeof window !== "undefined") {
-    return normalizeBaseUrl(window.location.origin);
+  if (configured) {
+    // In deployed environments, ignore accidental localhost backend config.
+    if (!isFrontendOnLocalhost && isLocalhostUrl(configured)) {
+      return "https://escort-prod.onrender.com";
+    }
+    return configured;
   }
 
   return "https://escort-prod.onrender.com";
