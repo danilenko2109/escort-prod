@@ -10,7 +10,7 @@ const getApiBaseUrl = () => {
     return normalizeBaseUrl(window.location.origin);
   }
 
-  return "http://localhost:8001";
+  return "https://escort-prod.onrender.com";
 };
 
 const API_BASE_URL = getApiBaseUrl();
