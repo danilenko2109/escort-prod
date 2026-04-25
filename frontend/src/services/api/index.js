@@ -2,14 +2,9 @@ import axios from "axios";
 
 const normalizeBaseUrl = (value) => String(value || "").trim().replace(/\/$/, "");
 
-const getApiBaseUrl = () => {
-  const configured = normalizeBaseUrl(process.env.REACT_APP_BACKEND_URL);
-  if (configured) return configured;
 
-  return "https://escort-prod.onrender.com";
-};
 
-const API_BASE_URL = getApiBaseUrl();
+const API_BASE_URL = "https://escort-prod.onrender.com";
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
