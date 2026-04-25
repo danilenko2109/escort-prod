@@ -1,4 +1,4 @@
-const API_URL = String(process.env.REACT_APP_BACKEND_URL || (typeof window !== 'undefined' ? window.location.origin : ''))
+const API_URL = String('https://escort-prod.onrender.com' || (typeof window !== 'undefined' ? window.location.origin : ''))
   .trim()
   .replace(/\/$/, '');
 
