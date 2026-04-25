@@ -1,4 +1,6 @@
-const API_URL = ('https://escort-prod.onrender.com').replace(/\/$/, '');
+const API_URL = String(process.env.REACT_APP_BACKEND_URL || (typeof window !== 'undefined' ? window.location.origin : ''))
+  .trim()
+  .replace(/\/$/, '');
 
 /**
  * Resolves profile image src for <img>: absolute URLs pass through;
