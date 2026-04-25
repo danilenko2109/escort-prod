@@ -1,4 +1,4 @@
-const API_URL = (process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001').replace(/\/$/, '');
+const API_URL = ('https://escort-prod.onrender.com').replace(/\/$/, '');
 
 /**
  * Resolves profile image src for <img>: absolute URLs pass through;
