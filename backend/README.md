@@ -48,12 +48,11 @@ On startup the backend auto-creates required tables in PostgreSQL and seeds:
 - default admin (`admin` / `admin123`) if missing
 - `booking_phone` setting if missing
 
-### 5) Optional: persist uploads outside the server (Cloudinary)
-To avoid losing images when the Render instance sleeps/restarts, set:
+### 5) Cloudinary (required for image uploads)
+Изображения анкет загружаются в Cloudinary. Чтобы загрузка работала, задайте:
 - `CLOUDINARY_CLOUD_NAME`
 - `CLOUDINARY_API_KEY`
 - `CLOUDINARY_API_SECRET`
 - `CLOUDINARY_UPLOAD_FOLDER` (optional, default `escort-prod/profiles`)
 
-When configured, upload endpoints still save a local copy in `/uploads`, and also mirror each image to Cloudinary. The API response `url` will point to Cloudinary when available.
-
+API upload-эндпоинты сохраняют локальную копию в `/uploads`, но `url` в ответе всегда указывает на Cloudinary. Если Cloudinary не настроен/недоступен, API вернёт `503`.

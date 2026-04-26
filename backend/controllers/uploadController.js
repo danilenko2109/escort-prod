@@ -18,8 +18,15 @@ const uploadImage = async (req, res) => {
   const localPath = `/uploads/${path.basename(req.file.path)}`;
   const externalUrl = await mirrorToExternalStorage(req.file.path, "escort-prod/general");
 
+  if (!externalUrl) {
+    return res.status(503).json({
+      detail:
+        "Cloudinary недоступен или не настроен. Задайте CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY и CLOUDINARY_API_SECRET.",
+    });
+  }
+
   return res.status(201).json({
-    url: externalUrl || localPath,
+    url: externalUrl,
     localUrl: localPath,
     externalUrl,
   });
@@ -34,8 +41,15 @@ const uploadProfileImage = async (req, res) => {
   const localPath = `/uploads/profiles/${filename}`;
   const externalUrl = await mirrorToExternalStorage(req.file.path, "escort-prod/profiles");
 
+  if (!externalUrl) {
+    return res.status(503).json({
+      detail:
+        "Cloudinary недоступен или не настроен. Задайте CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY и CLOUDINARY_API_SECRET.",
+    });
+  }
+
   return res.status(201).json({
-    url: externalUrl || localPath,
+    url: externalUrl,
     localUrl: localPath,
     externalUrl,
   });
