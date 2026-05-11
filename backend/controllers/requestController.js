@@ -1,5 +1,4 @@
 const { sendTelegramMessage, escapeTelegramHtml } = require('../utils/telegram');
-const db = require("../src/database/db");
 
 const ALLOWED_DURATIONS = ["1h", "2h", "3h"];
 
@@ -38,8 +37,6 @@ const submitBookingRequest = async (req, res) => {
     return res.status(400).json({ detail: "Комментарий слишком длинный" });
   }
 
-  const bookingPhone = (await db.prepare("SELECT value FROM settings WHERE key = ?").get("booking_phone"))?.value || "";
-
   const telegramText = [
     '<b>Новая заявка на анкету</b>',
     '',
@@ -64,7 +61,6 @@ const submitBookingRequest = async (req, res) => {
 
   return res.status(201).json({
     message: 'Заявка принята',
-    phone: bookingPhone || '+7 (900) 000-00-00',
     telegramDelivered,
   });
 };

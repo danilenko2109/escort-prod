@@ -2,15 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { LayoutDashboard, Users, MessageSquare, Star, LogOut, Plus } from 'lucide-react';
-import { adminAPI, settingsAPI } from '../../services/api';
-import { toast } from 'sonner';
+import { adminAPI } from '../../services/api';
 
 const AdminDashboardPage = () => {
   const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [bookingPhone, setBookingPhone] = useState('');
-  const [savingPhone, setSavingPhone] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('admin_token');
@@ -25,8 +22,6 @@ const AdminDashboardPage = () => {
     try {
       const data = await adminAPI.getStats();
       setStats(data);
-      const phoneData = await settingsAPI.getBookingPhone();
-      setBookingPhone(phoneData.phone || '');
     } catch (error) {
       console.error('Error fetching stats:', error);
       if (String(error.message).toLowerCase().includes('unauthorized')) {
@@ -35,24 +30,6 @@ const AdminDashboardPage = () => {
       }
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleSavePhone = async () => {
-    const value = bookingPhone.trim();
-    if (value.length < 5) {
-      toast.error('Укажите корректный номер карты');
-      return;
-    }
-    setSavingPhone(true);
-    try {
-      const data = await settingsAPI.updateBookingPhone(value);
-      setBookingPhone(data.phone || value);
-      toast.success('Реквизиты подтверждения обновлен');
-    } catch (error) {
-      toast.error(error.message || 'Не удалось сохранить реквизиты');
-    } finally {
-      setSavingPhone(false);
     }
   };
 
@@ -87,34 +64,6 @@ const AdminDashboardPage = () => {
             <LogOut size={18} />
             <span>Выход</span>
           </button>
-        </div>
-
-        <div className="mb-12 bg-[#0A0A0A] border border-white/10 p-6 rounded-sm">
-          <h2 className="text-2xl font-medium text-[#D4AF37] mb-2">Настройки заявок</h2>
-          <p className="text-sm text-[#A1A1AA] mb-6">
-            Этот номер карты показывается в модальном окне после отправки заявки на анкете.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 items-end">
-            <div>
-              <label className="block text-sm text-[#A1A1AA] mb-2 uppercase tracking-widest">
-                Реквизиты
-              </label>
-              <input
-                type="text"
-                value={bookingPhone}
-                onChange={(e) => setBookingPhone(e.target.value)}
-                placeholder="0000 0000 0000 0000"
-                className="w-full bg-transparent border-b border-white/20 focus:border-[#D4AF37] text-white py-3 px-0 outline-none"
-              />
-            </div>
-            <button
-              onClick={handleSavePhone}
-              disabled={savingPhone}
-              className="bg-[#D4AF37] text-[#050505] hover:bg-[#F3E5AB] transition-colors px-8 py-3 uppercase tracking-widest text-xs disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {savingPhone ? 'Сохранение...' : 'Сохранить'}
-            </button>
-          </div>
         </div>
       </div>
 

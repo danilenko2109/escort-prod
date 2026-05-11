@@ -22,7 +22,7 @@ const AdminProfilesPage = () => {
   const fetchProfiles = async () => {
     setLoading(true);
     try {
-      const data = await profilesAPI.getAll({ active_only: false });
+      const data = await profilesAPI.getAll({ active_only: false, hidden_only: 'include' });
       setProfiles(data);
     } catch (error) {
       console.error('Error fetching profiles:', error);
@@ -111,6 +111,7 @@ const AdminProfilesPage = () => {
                   <th className="text-left text-sm text-[#A1A1AA] uppercase tracking-widest py-4 px-4">Возраст</th>
                   <th className="text-left text-sm text-[#A1A1AA] uppercase tracking-widest py-4 px-4">Место рождения</th>
                   <th className="text-left text-sm text-[#A1A1AA] uppercase tracking-widest py-4 px-4">Статус</th>
+                  <th className="text-left text-sm text-[#A1A1AA] uppercase tracking-widest py-4 px-4">Витрина</th>
                   <th className="text-left text-sm text-[#A1A1AA] uppercase tracking-widest py-4 px-4">VIP</th>
                   <th className="text-right text-sm text-[#A1A1AA] uppercase tracking-widest py-4 px-4">Действия</th>
                 </tr>
@@ -145,6 +146,11 @@ const AdminProfilesPage = () => {
                         {profile.isActive ? <Eye size={16} /> : <EyeOff size={16} />}
                         <span>{profile.isActive ? 'Активен' : 'Скрыт'}</span>
                       </button>
+                    </td>
+                    <td className="py-4 px-4">
+                      <span className={`text-sm ${profile.isHidden ? 'text-amber-400' : 'text-green-500'}`}>
+                        {profile.isHidden ? 'Только по коду' : 'В каталоге'}
+                      </span>
                     </td>
                     <td className="py-4 px-4">
                       <span className={`text-sm ${profile.isFeatured ? 'text-[#D4AF37]' : 'text-[#71717A]'}`}>

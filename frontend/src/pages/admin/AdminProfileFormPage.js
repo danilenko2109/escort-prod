@@ -27,6 +27,7 @@ const AdminProfileFormPage = () => {
     lng: 37.6173,
     isActive: true,
     isFeatured: false,
+    isHidden: false,
     rate1h: 10000,
     rate2h: 18000,
     rate3h: 25000,
@@ -471,6 +472,17 @@ const AdminProfileFormPage = () => {
                   data-testid="profile-is-active-checkbox"
                 />
                 <span className="text-[#F8F8F8]">Активен</span>
+              </label>
+              <label className="flex items-center space-x-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="isHidden"
+                  checked={formData.isHidden}
+                  onChange={handleChange}
+                  className="w-5 h-5"
+                  data-testid="profile-is-hidden-checkbox"
+                />
+                <span className="text-[#F8F8F8]">Скрыть из каталога (открывается только поиском по коду)</span>
               </label>
               <label className="flex items-center space-x-3 cursor-pointer">
                 <input
