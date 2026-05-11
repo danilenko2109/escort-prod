@@ -70,6 +70,7 @@ const init = async () => {
       tags TEXT NOT NULL DEFAULT '[]',
       is_active INTEGER NOT NULL DEFAULT 1,
       is_featured INTEGER NOT NULL DEFAULT 0,
+      is_hidden INTEGER NOT NULL DEFAULT 0,
       rate_1h INTEGER NOT NULL DEFAULT 10000,
       rate_2h INTEGER NOT NULL DEFAULT 18000,
       rate_3h INTEGER NOT NULL DEFAULT 25000,
@@ -92,6 +93,8 @@ const init = async () => {
       updated_at TEXT NOT NULL
     );
   `);
+
+  await rawQuery(`ALTER TABLE profiles ADD COLUMN IF NOT EXISTS is_hidden INTEGER NOT NULL DEFAULT 0`);
 
   const now = new Date().toISOString();
 

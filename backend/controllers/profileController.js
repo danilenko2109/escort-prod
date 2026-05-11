@@ -37,6 +37,7 @@ const toProfileResponse = (row) => {
     tags: parseList(row.tags),
     isActive: Boolean(row.is_active),
     isFeatured: Boolean(row.is_featured),
+    isHidden: Boolean(row.is_hidden),
     rate1h: row.rate_1h,
     rate2h: row.rate_2h,
     rate3h: row.rate_3h,
@@ -53,7 +54,7 @@ const buildCode = (inputCode, name) => {
 };
 
 const listProfiles = async (req, res) => {
-  const { featured_only, active_only } = req.query;
+  const { featured_only, active_only, hidden_only } = req.query;
   const conditions = [];
 
   if (featured_only === "true") {
@@ -61,6 +62,11 @@ const listProfiles = async (req, res) => {
   }
   if (active_only !== "false") {
     conditions.push("is_active = 1");
+  }
+  if (hidden_only === "true") {
+    conditions.push("is_hidden = 1");
+  } else if (hidden_only !== "include") {
+    conditions.push("is_hidden = 0");
   }
 
   const whereClause = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
@@ -113,9 +119,9 @@ const createProfile = async (req, res) => {
       .prepare(
         `INSERT INTO profiles (
           code, slug, name, age, city, country, description_short, description_full,
-          images, height, weight, languages, tags, is_active, is_featured,
+          images, height, weight, languages, tags, is_active, is_featured, is_hidden,
           rate_1h, rate_2h, rate_3h, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id`
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id`
       )
       .run(
         code,
@@ -133,6 +139,7 @@ const createProfile = async (req, res) => {
         JSON.stringify(body.tags || []),
         body.isActive === false ? 0 : 1,
         body.isFeatured ? 1 : 0,
+        body.isHidden ? 1 : 0,
         Number(body.rate1h || 10000),
         Number(body.rate2h || 18000),
         Number(body.rate3h || 25000),
@@ -180,6 +187,7 @@ const updateProfile = async (req, res) => {
     tags: JSON.stringify(body.tags ?? parseList(existing.tags)),
     is_active: body.isActive === undefined ? existing.is_active : (body.isActive ? 1 : 0),
     is_featured: body.isFeatured === undefined ? existing.is_featured : (body.isFeatured ? 1 : 0),
+    is_hidden: body.isHidden === undefined ? existing.is_hidden : (body.isHidden ? 1 : 0),
     rate_1h: Number(body.rate1h ?? existing.rate_1h),
     rate_2h: Number(body.rate2h ?? existing.rate_2h),
     rate_3h: Number(body.rate3h ?? existing.rate_3h),
@@ -191,7 +199,7 @@ const updateProfile = async (req, res) => {
       `UPDATE profiles SET
         code = ?, slug = ?, name = ?, age = ?, city = ?, country = ?,
         description_short = ?, description_full = ?, images = ?, height = ?, weight = ?,
-        languages = ?, tags = ?, is_active = ?, is_featured = ?, rate_1h = ?, rate_2h = ?, rate_3h = ?, updated_at = ?
+        languages = ?, tags = ?, is_active = ?, is_featured = ?, is_hidden = ?, rate_1h = ?, rate_2h = ?, rate_3h = ?, updated_at = ?
       WHERE id = ?`
     ).run(
       updated.code,
@@ -209,6 +217,7 @@ const updateProfile = async (req, res) => {
       updated.tags,
       updated.is_active,
       updated.is_featured,
+      updated.is_hidden,
       updated.rate_1h,
       updated.rate_2h,
       updated.rate_3h,

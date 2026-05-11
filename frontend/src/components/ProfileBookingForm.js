@@ -13,7 +13,7 @@ import {
   Send,
   X,
 } from 'lucide-react';
-import { requestAPI, settingsAPI } from '../services/api';
+import { requestAPI } from '../services/api';
 
 const SERVICES = [
   {
@@ -71,21 +71,6 @@ const ProfileBookingForm = ({ profile }) => {
   const [submitError, setSubmitError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [bookingPhone, setBookingPhone] = useState('+7 (900) 000-00-00');
-
-  useEffect(() => {
-    const loadBookingPhone = async () => {
-      try {
-        const data = await settingsAPI.getBookingPhone();
-        if (data?.phone) setBookingPhone(data.phone);
-      } catch {
-        // fallback to default is enough for UI
-      }
-    };
-    loadBookingPhone();
-  }, []);
-
-
   useEffect(() => {
     if (showSuccessModal) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -133,7 +118,7 @@ const ProfileBookingForm = ({ profile }) => {
 
     setLoading(true);
     try {
-      const data = await requestAPI.submit({
+      await requestAPI.submit({
         profileCode: profile.code || String(profile.id),
         serviceKey,
         duration,
@@ -145,7 +130,6 @@ const ProfileBookingForm = ({ profile }) => {
         comment: comment.trim(),
         consent: true,
       });
-      setBookingPhone(data.phone || bookingPhone);
       setShowSuccessModal(true);
     } catch (error) {
       setSubmitError(error.message || 'Не удалось отправить заявку');
@@ -417,10 +401,6 @@ const ProfileBookingForm = ({ profile }) => {
         </div>
       </div>
 
-      <div className="rounded-sm border border-[#D4AF37]/20 bg-[#D4AF37]/[0.04] px-4 py-3 text-sm text-[#A1A1AA]">
-        Квитанцию для связи с менеджером отправляйте в Telegram: <span className="text-[#D4AF37] font-medium">@aurasupportss_bot</span>.
-      </div>
-
       <button
         type="submit"
         disabled={loading}
@@ -442,7 +422,7 @@ const ProfileBookingForm = ({ profile }) => {
             <div className="flex items-start justify-between gap-3">
               <div>
                 <h3 className="text-2xl font-medium text-[#D4AF37]">Заявка принята</h3>
-                <p className="mt-4 text-sm uppercase tracking-widest text-[#A1A1AA]">Сумма к оплате</p>
+                <p className="mt-4 text-sm uppercase tracking-widest text-[#A1A1AA]">Менеджер свяжется с вами</p>
               </div>
               <button
                 onClick={() => {
@@ -454,11 +434,9 @@ const ProfileBookingForm = ({ profile }) => {
                 <X size={18} />
               </button>
             </div>
-            <p className="mt-2 text-4xl font-medium tracking-tight text-[#F8F8F8]">{formatRub(price)}</p>
-            <p className="mt-5 text-[#A1A1AA]">Оплатите заявку по реквизитам ниже и сохраните квитанцию об оплате.</p>
-            <p className="mt-2 text-3xl font-medium tracking-tight text-[#D4AF37]">{bookingPhone}</p>
+            <p className="mt-5 text-[#A1A1AA]">Заявка отправлена менеджеру. Мы уточним детали и подтвердим итоговые условия без оплаты на сайте.</p>
             <div className="mt-6 rounded-sm border border-[#D4AF37]/20 bg-[#D4AF37]/10 p-4 text-sm text-[#F8F8F8]">
-После оплаты отправьте квитанцию в Telegram <span className="text-[#D4AF37] font-medium">@aurasupportss_bot</span>, чтобы менеджер подтвердил заказ и отправил детали.
+Если хотите ускорить связь, напишите в Telegram <span className="text-[#D4AF37] font-medium">@aurasupportss_bot</span>.
             </div>
             <a
               href="https://t.me/aurasupportss_bot"

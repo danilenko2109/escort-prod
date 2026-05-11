@@ -52,12 +52,12 @@ const migrateTable = async (client, table, rows) => {
         client,
         `INSERT INTO profiles (
           id, code, slug, name, age, city, country, description_short, description_full,
-          images, height, weight, languages, tags, is_active, is_featured,
+          images, height, weight, languages, tags, is_active, is_featured, is_hidden,
           rate_1h, rate_2h, rate_3h, created_at, updated_at
         ) VALUES (
           $1,$2,$3,$4,$5,$6,$7,$8,$9,
           $10,$11,$12,$13,$14,$15,$16,
-          $17,$18,$19,$20,$21
+          $17,$18,$19,$20,$21,$22
         )
         ON CONFLICT (id) DO UPDATE SET
           code = EXCLUDED.code,
@@ -75,6 +75,7 @@ const migrateTable = async (client, table, rows) => {
           tags = EXCLUDED.tags,
           is_active = EXCLUDED.is_active,
           is_featured = EXCLUDED.is_featured,
+          is_hidden = EXCLUDED.is_hidden,
           rate_1h = EXCLUDED.rate_1h,
           rate_2h = EXCLUDED.rate_2h,
           rate_3h = EXCLUDED.rate_3h,
@@ -97,6 +98,7 @@ const migrateTable = async (client, table, rows) => {
           row.tags,
           row.is_active,
           row.is_featured,
+          row.is_hidden || 0,
           row.rate_1h,
           row.rate_2h,
           row.rate_3h,
